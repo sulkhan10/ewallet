@@ -3,11 +3,20 @@ import { View, Text, StyleSheet } from "react-native";
 import { Button } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 
-let Home = () => {
+const Home = () => {
+  const navigation = useNavigation();
+
+  const handleTopUpPress = () => {
+    navigation.navigate("TopUp");
+  };
+  const handleTransferPress = () => {
+    navigation.navigate("Transfer");
+  };
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "aqua" }}>
-      <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.contentContainer}>
         <Text style={styles.balanceText}>Saldo</Text>
         <Text style={styles.balanceAmount}>$1000</Text>
         <View style={styles.buttonContainer}>
@@ -20,15 +29,12 @@ let Home = () => {
                 size={24}
               />
             )}
-            onPress={() => {
-              // Handle top-up button press
-            }}
+            onPress={handleTopUpPress}
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonLabel}
           >
-            {/* <Text> */}
-
             Top Up
-            {/* </Text> */}
           </Button>
           <Button
             mode="contained"
@@ -39,18 +45,15 @@ let Home = () => {
                 size={24}
               />
             )}
-            onPress={() => {
-              // Handle transfer button press
-            }}
+            onPress={handleTransferPress}
             style={styles.button}
+            contentStyle={styles.buttonContent}
+            labelStyle={styles.buttonLabel}
           >
-            {/* <Text> */}
-
             Transfer
-            {/* </Text> */}
           </Button>
         </View>
-      </View>{" "}
+      </View>
     </SafeAreaView>
   );
 };
@@ -58,19 +61,26 @@ let Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "aqua",
+  },
+  contentContainer: {
+    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff",
+    paddingHorizontal: 16,
   },
   balanceText: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 16,
+    color: "#333",
   },
   balanceAmount: {
     fontSize: 36,
     fontWeight: "bold",
     marginBottom: 32,
+    color: "#333",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -80,6 +90,16 @@ const styles = StyleSheet.create({
   button: {
     marginVertical: 8,
     width: "40%",
+    borderRadius: 8,
+    backgroundColor: "#2980B9",
+  },
+  buttonContent: {
+    height: 48,
+  },
+  buttonLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFF",
   },
 });
 

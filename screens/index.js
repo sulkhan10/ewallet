@@ -5,5 +5,6 @@ import History from "./History";
 import Profile from "./Profile";
 import TopUp from "./TopUp";
 import Transfer from "./Transfer";
+import UpdateProfile from "./UpdateProfile";
 
-export {Home, SignUp, Login, History, Profile, TopUp, Transfer,}
+export {Home, SignUp, Login, History, Profile, TopUp, Transfer, UpdateProfile}

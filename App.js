@@ -6,7 +6,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 const Stack = createNativeStackNavigator();
 import MainTab from "./navigations/MainTab";
-
+import { TopUp, Transfer, UpdateProfile } from './screens';
 export default function App() {
   return (
     <PaperProvider>
@@ -18,7 +18,9 @@ export default function App() {
           component={MainTab}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen name="Detail" component={Detail} /> */}
+        <Stack.Screen name="TopUp" component={TopUp} />
+        <Stack.Screen name="Transfer" component={Transfer} />
+        <Stack.Screen name="UpdateProfile" component={UpdateProfile} />
       </Stack.Navigator>
     </NavigationContainer>
     </PaperProvider>

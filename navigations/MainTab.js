@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { Login, SignUp, Home } from "../screens";
+import { Login, SignUp, Home, Profile, History } from "../screens";
 const Tab = createBottomTabNavigator();
 
 
@@ -26,16 +26,38 @@ export default function MainTab() {
           headerShown={false}
           />
       <Tab.Screen
+        name="History"
+        component={History}
+        options={{
+          headerShown: false,
+          tabBarLabel: "History",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="history" size={24}  color={color}/>
+            ),
+          }}
+          />
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerShown: false,
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="account-circle" size={24} color={color}/>
+          ),
+        }}
+      />
+      <Tab.Screen
         name="SignUp"
         component={SignUp}
         options={{
           headerShown: false,
           tabBarLabel: "SignUp",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="note-check" size={24}  color={color}/>
-            ),
-          }}
-          />
+            <MaterialCommunityIcons name="account-circle" size={24} color={color}/>
+          ),
+        }}
+      />
       <Tab.Screen
         name="Login"
         component={Login}
@@ -43,7 +65,7 @@ export default function MainTab() {
           headerShown: false,
           tabBarLabel: "Login",
           tabBarIcon: ({ color }) => (
-            <MaterialCommunityIcons name="newspaper-variant" size={24} color={color}/>
+            <MaterialCommunityIcons name="account-circle" size={24} color={color}/>
           ),
         }}
       />

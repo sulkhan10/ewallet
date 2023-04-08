@@ -2,29 +2,36 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Transfer = () => {
-  const [transferAmount, setTransferAmount] = useState("");
+const UpdateProfile = () => {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
 
-  const handleTransferPress = () => {
-    // Perform transfer action with the transferAmount value
-    // For example, you can send a request to your backend API to process the transfer
+  const handleUpdateProfilePress = () => {
+    // Perform update profile action with the firstName and lastName values
+    // For example, you can send a request to your backend API to update the user profile
     // You can customize this part to fit your specific use case
-    console.log("Transfer Amount:", transferAmount);
+    console.log("First Name:", firstName);
+    console.log("Last Name:", lastName);
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.pageTitle}>Transfer Page</Text>
+      <Text style={styles.pageTitle}>Update Profile</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
-          placeholder="Enter transfer amount"
-          keyboardType="numeric"
-          value={transferAmount}
-          onChangeText={setTransferAmount}
+          placeholder="Enter First Name"
+          value={firstName}
+          onChangeText={setFirstName}
         />
-        <TouchableOpacity style={styles.button} onPress={handleTransferPress}>
-          <Text style={styles.buttonText}>Transfer</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter Last Name"
+          value={lastName}
+          onChangeText={setLastName}
+        />
+        <TouchableOpacity style={styles.button} onPress={handleUpdateProfilePress}>
+          <Text style={styles.buttonText}>Update Profile</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -71,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Transfer;
+export default UpdateProfile;
