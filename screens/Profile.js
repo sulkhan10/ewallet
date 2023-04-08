@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, Button ,TouchableOpacity } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import axios from "axios";
 const Profile = () => {
+  const [profileData, setProfileData] = useState({});
+
     const navigation = useNavigation();
 
   const handleUpdateProfilePress = () => {
@@ -21,7 +23,36 @@ const Profile = () => {
       })
       .catch(error => console.error("Logout failed:", error));
   };
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        // Get the bearer token from storage
+        const token = await AsyncStorage.getItem("token");
 
+        // Set the Authorization header with bearer token
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        // Make the GET request to fetch the user profile
+        const response = await axios.get(
+          "https://tht-api.nutech-integrasi.app/getProfile",
+          config
+        );
+console.log(response.data);
+        // Update the profileData state with the fetched profile data
+        setProfileData(response.data.data);
+
+      } catch (error) {
+        // Handle any errors that occur during the request
+        console.error("Failed to fetch profile:", error);
+      }
+    };
+
+    fetchProfile();
+  }, []);
   return (
     <SafeAreaView style={{ flex: 1 ,backgroundColor:'aqua'}}>
 
@@ -30,8 +61,8 @@ const Profile = () => {
         <View style={styles.profileImageContainer}>
           <MaterialCommunityIcons name="account" size={64} color="#FFF" />
         </View>
-        <Text style={styles.profileUsername}>John Doe</Text>
-        <Text style={styles.profileEmail}>johndoe@gmail.com</Text>
+        <Text style={styles.profileUsername}>{profileData.first_name} {profileData.last_name}</Text>
+        <Text style={styles.profileEmail}>{profileData.email}</Text>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity

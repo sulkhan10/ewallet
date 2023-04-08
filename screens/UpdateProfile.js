@@ -1,38 +1,68 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import axios from "axios";
+import { View, StyleSheet, Text, TextInput, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const UpdateProfile = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [updateStatus, setUpdateStatus] = useState(null);
 
-  const handleUpdateProfilePress = () => {
-    // Perform update profile action with the firstName and lastName values
-    // For example, you can send a request to your backend API to update the user profile
-    // You can customize this part to fit your specific use case
-    console.log("First Name:", firstName);
-    console.log("Last Name:", lastName);
+  const handleUpdatePress = async () => {
+    try {
+      // Get the bearer token from storage
+      const token = await AsyncStorage.getItem("token");
+
+      // Set the Authorization header with bearer token
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
+      // Prepare the data to be sent in the request body
+      const data = {
+        first_name: firstName,
+        last_name: lastName,
+      };
+
+      // Make the POST request to update the profile
+      const response = await axios.post(
+        "https://tht-api.nutech-integrasi.app/updateProfile",
+        data,
+        config
+      );
+        console.log("Profile updated successfully:", response.data);
+
+      // Update the updateStatus state with success message
+      setUpdateStatus("Profile updated successfully!");
+
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error("Failed to update profile:", error);
+      // Update the updateStatus state with error message
+      setUpdateStatus("Failed to update profile");
+    }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.pageTitle}>Update Profile</Text>
-      <View style={styles.inputContainer}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "peachpuff" }}>
+      <View style={styles.container}>
+        <Text style={styles.pageTitle}>Update Profile Page</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter First Name"
+          placeholder="First Name"
           value={firstName}
           onChangeText={setFirstName}
         />
         <TextInput
           style={styles.input}
-          placeholder="Enter Last Name"
+          placeholder="Last Name"
           value={lastName}
           onChangeText={setLastName}
         />
-        <TouchableOpacity style={styles.button} onPress={handleUpdateProfilePress}>
-          <Text style={styles.buttonText}>Update Profile</Text>
-        </TouchableOpacity>
+        <Button title="Update Profile" onPress={handleUpdatePress} />
+        {updateStatus && <Text style={styles.updateStatus}>{updateStatus}</Text>}
       </View>
     </SafeAreaView>
   );
@@ -43,38 +73,23 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8EFEF",
   },
   pageTitle: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 32,
-  },
-  inputContainer: {
-    width: "80%",
-    alignItems: "center",
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#fff",
-    borderRadius: 25,
-    paddingHorizontal: 16,
-    fontSize: 18,
+    fontSize: 24,
     marginBottom: 16,
   },
-  button: {
-    backgroundColor: "#ff7675",
-    borderRadius: 25,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    alignSelf: "center",
+  input: {
+    width: "80%",
+    height: 40,
+    borderWidth: 1,
+    borderColor: "gray",
+    borderRadius: 5,
+    marginBottom: 16,
+    paddingHorizontal: 12,
   },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#fff",
+  updateStatus: {
+    marginTop: 16,
+    color: "green",
   },
 });
 

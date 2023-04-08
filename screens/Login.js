@@ -30,7 +30,7 @@ const Login = () => {
       password,
     };
     axios
-      .post("https://api.example.com/login", data)
+      .post("https://tht-api.nutech-integrasi.app/login", data)
       .then(response => {
         console.log("Login successful:", response.data);
         // Handle successful login, e.g., store user data and token in local storage

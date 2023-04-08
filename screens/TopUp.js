@@ -1,17 +1,57 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from "@react-navigation/native";
 
 const TopUp = () => {
   const [topUpAmount, setTopUpAmount] = useState('');
+  const navigation = useNavigation();
 
-  const handleTopUpPress = () => {
-    // Perform top-up action with the topUpAmount value
-    // For example, you can send a request to your backend API to process the top-up
-    // You can customize this part to fit your specific use case
-    console.log('Top up amount:', topUpAmount);
+  const handleTopUpPress = async () => {
+    try {
+      // Get the bearer token from storage
+      const token = await AsyncStorage.getItem("token");
+  
+      // Set the Authorization and Content-Type headers
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+  
+      // Create the payload for the top-up request
+      const payload = {
+        amount: topUpAmount
+      };
+  
+      // Make the POST request to perform the top-up action
+      const response = await axios.post(
+        "https://tht-api.nutech-integrasi.app/topup",
+        payload,
+        config
+      );
+  console.log(response.data);
+      // Handle the response from the API
+      if (response.data.status === 0) {
+        // Top-up successful, show success message
+        Alert.alert('Top-up Successful', 'Your account has been topped up successfully!', [
+          { text: 'OK', onPress: () => navigation.navigate('Home') }
+        ]);
+      } else {
+        // Top-up failed, show error message
+        Alert.alert('Top-up Failed', 'Failed to top-up your account. Please try again later.');
+      }
+  
+    } catch (error) {
+      // Handle any errors that occur during the request
+      console.error("Failed to perform top-up:", error);
+    }
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -35,34 +75,32 @@ const TopUp = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'aqua',
+    backgroundColor: "white",
+    justifyContent: "center",
+    alignItems: "center",
   },
   pageTitle: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 32,
+    fontSize: 24,
+    marginBottom: 16,
   },
   inputContainer: {
-    width: '80%',
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
   },
   input: {
     flex: 1,
-    height: 50,
-    backgroundColor: '#fff',
-    borderRadius: 25,
-    paddingHorizontal: 16,
-    fontSize: 18,
+    height: 48,
+    borderColor: "gray",
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    borderRadius: 4,
+    marginRight: 8,
   },
   button: {
-    marginLeft: 16,
-    backgroundColor: 'purple',
-    borderRadius: 25,
-    padding: 10,
+    backgroundColor: "peachpuff",
+    borderRadius: 4,
+    padding: 12,
   },
 });
 
