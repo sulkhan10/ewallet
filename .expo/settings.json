@@ -1,3 +1,10 @@
 {
-  "urlRandomness": "Z9tMReA"
+  "urlRandomness": "Z9tMReA",
+  "dev": true,
+  "minify": false,
+  "https": false,
+  "scheme": null,
+  "hostType": "tunnel",
+  "lanType": "ip",
+  "devClient": false
 }
