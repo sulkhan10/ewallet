@@ -5,8 +5,11 @@ import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
-
+import { atom,useAtom } from "jotai";
+import { balanceAtom } from "../store";
 const TopUp = () => {
+  const [balance, setBalance] = useAtom(balanceAtom)
+
   const [topUpAmount, setTopUpAmount] = useState('');
   const navigation = useNavigation();
 
@@ -41,6 +44,7 @@ const TopUp = () => {
         Alert.alert('Top-up Successful', 'Your account has been topped up successfully!', [
           { text: 'OK', onPress: () => navigation.navigate('Home') }
         ]);
+        setBalance(balance+ parseInt(topUpAmount))
       } else {
         // Top-up failed, show error message
         Alert.alert('Top-up Failed', 'Failed to top-up your account. Please try again later.');

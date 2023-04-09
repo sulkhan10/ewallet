@@ -10,37 +10,25 @@ const UpdateProfile = () => {
 
   const handleUpdatePress = async () => {
     try {
-      // Get the bearer token from storage
       const token = await AsyncStorage.getItem("token");
-
-      // Set the Authorization header with bearer token
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
-
-      // Prepare the data to be sent in the request body
       const data = {
         first_name: firstName,
         last_name: lastName,
       };
-
-      // Make the POST request to update the profile
       const response = await axios.post(
         "https://tht-api.nutech-integrasi.app/updateProfile",
         data,
         config
       );
         console.log("Profile updated successfully:", response.data);
-
-      // Update the updateStatus state with success message
       setUpdateStatus("Profile updated successfully!");
-
     } catch (error) {
-      // Handle any errors that occur during the request
       console.error("Failed to update profile:", error);
-      // Update the updateStatus state with error message
       setUpdateStatus("Failed to update profile");
     }
   };

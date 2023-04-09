@@ -4,63 +4,58 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { balanceAtom } from "../store";
+import { useAtom } from "jotai";
+import Spinner from "react-native-loading-spinner-overlay";
+
 const History = () => {
   const [historyData, setHistoryData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const [balance, setBalance] = useAtom(balanceAtom);
   useEffect(() => {
+    setLoading(true);
+
     const fetchHistory = async () => {
       try {
-        // Get the bearer token from storage
         const token = await AsyncStorage.getItem("token");
         console.log(token);
-        // Set the Authorization header with bearer token
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
-
-        // Make the GET request to fetch the user profile
         const response = await axios.get(
           "https://tht-api.nutech-integrasi.app/transactionHistory",
           config
         );
         console.log(response.data);
-        // Update the profileData state with the fetched profile data
         setHistoryData(response.data.data);
       } catch (error) {
-        // Handle any errors that occur during the request
         console.error("Failed to fetch profile:", error);
       }
     };
 
     fetchHistory();
-  }, []);
-  // const transactionData = [
-  //   {
-  //     transaction_id: "21",
-  //     transaction_time: "2021-07-22 16:17:30",
-  //     transaction_type: "Transfer",
-  //     amount: 5,
-  //   },
-  //   {
-  //     transaction_id: "22",
-  //     transaction_time: "2021-07-23 14:20:45",
-  //     transaction_type: "Top Up",
-  //     amount: 10,
-  //   },
-  //   // Add more transaction data here
-  // ];
+    setLoading(false);
 
+  }, [balance]);
+ 
   const renderTransactionItem = ({ item }) => {
     const transactionIcon =
-      item.transaction_type === "Transfer"
+      item.transaction_type === "transfer"
         ? "bank-transfer"
         : "credit-card-outline";
     const transactionColor =
-      item.transaction_type === "Transfer" ? "#FF6347" : "#66CDAA";
+      item.transaction_type === "transfer" ? "#FF6347" : "#66CDAA";
 
     return (
       <View style={styles.transactionItem}>
+         <Spinner
+        visible={loading}
+        textContent={"Loading..."}
+        textStyle={styles.spinnerTextStyle}
+      />
         <View
           style={[
             styles.transactionIconContainer,

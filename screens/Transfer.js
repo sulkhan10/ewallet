@@ -1,17 +1,46 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from 'react';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AntDesign } from '@expo/vector-icons';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from "@react-navigation/native";
+import { atom, useAtom } from "jotai";
+import { balanceAtom } from "../store";
 
 const Transfer = () => {
-  const [transferAmount, setTransferAmount] = useState("");
-
-  const handleTransferPress = () => {
-    // Perform transfer action with the transferAmount value
-    // For example, you can send a request to your backend API to process the transfer
-    // You can customize this part to fit your specific use case
-    console.log("Transfer Amount:", transferAmount);
+  const [balance, setBalance] = useAtom(balanceAtom)
+  const [transferAmount, setTransferAmount] = useState('');
+  const navigation = useNavigation();
+  const handleTransferPress = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+        const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      };
+        const payload = {
+        amount: transferAmount,
+      };
+        const response = await axios.post(
+        "https://tht-api.nutech-integrasi.app/transfer",
+        payload,
+        config
+      );
+        if (response.data.status === 0) {
+        Alert.alert('Transfer Successful', 'Your transfer was successful!', [
+          { text: 'OK', onPress: () => navigation.navigate('Home') }
+        ]);
+        setBalance(balance - parseInt(transferAmount));
+      } else {
+        Alert.alert('Transfer Failed', 'Failed to transfer funds. Please try again later.');
+      }
+    } catch (error) {
+      console.error("Failed to perform transfer:", error);
+    }
   };
-  
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.pageTitle}>Transfer Page</Text>

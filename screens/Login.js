@@ -1,55 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import MainTab from "../navigations/MainTab";
+import Home from "./Home";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+  let token = AsyncStorage.getItem("token");
 
-  useEffect(() => {
-    // Check if token is present in local storage
-    // If yes, redirect to home page
-    AsyncStorage.getItem("token")
-      .then(token => {
-        if (token) {
-          navigation.navigate("Home");
-        }
-      })
-      .catch(error => console.error("Error checking token:", error));
-  }, []);
 
   const handleLoginPress = () => {
-    // Perform login action with the email and password values
-    // For example, you can send a POST request to your backend API to authenticate the user
-    // You can customize this part to fit your specific use case
+
     const data = {
       email,
       password,
     };
     axios
       .post("https://tht-api.nutech-integrasi.app/login", data)
-      .then(response => {
+      .then((response) => {
         console.log("Login successful:", response.data);
-        // Handle successful login, e.g., store user data and token in local storage
         const { email, first_name, last_name, token } = response.data.data;
         AsyncStorage.setItem("email", email);
         AsyncStorage.setItem("first_name", first_name);
         AsyncStorage.setItem("last_name", last_name);
         AsyncStorage.setItem("token", token);
-        // Redirect to home page
-        navigation.navigate("Home");
+        navigation.navigate("MainTab");
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Login failed:", error);
-        // Handle login error, e.g., display error message
       });
   };
 
   const handleSignupPress = () => {
-    // Redirect to registration page
     navigation.navigate("SignUp");
   };
 

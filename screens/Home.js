@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet ,TouchableOpacity} from "react-native";
 import { Button } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import Spinner from 'react-native-loading-spinner-overlay';
+import Spinner from "react-native-loading-spinner-overlay";
+import { atom, useAtom } from "jotai";
+import { balanceAtom } from "../store";
 
 const Home = () => {
-  const [balance,setBalance] = useState(0);
-  const [loading,setLoading] = useState(false);
+  const [balance, setBalance] = useAtom(balanceAtom);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-
   const handleTopUpPress = () => {
     navigation.navigate("TopUp");
   };
@@ -21,95 +22,106 @@ const Home = () => {
   };
   useEffect(() => {
     setLoading(true);
+    const isLoggedIn = () => {
+      AsyncStorage.getItem("token")
+        .then((token) => {
+          if (!token) {
+            navigation.navigate("Login");
+          }
+        })
+        .catch((error) => console.error("Error checking token:", error));
+    };
     const fetchBalance = async () => {
       try {
-        // Get the bearer token from storage
         const token = await AsyncStorage.getItem("token");
-
-        // Set the Authorization header with bearer token
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
-
-        // Make the GET request to fetch the user profile
         const response = await axios.get(
           "https://tht-api.nutech-integrasi.app/balance          ",
           config
         );
         console.log(response.data.data);
-        response.data.data.balance == null ? setBalance(0) : setBalance(response.data.data.balance);
-        // Update the profileData state with the fetched profile data
-        setLoading(false);
+        response.data.data.balance == null
+          ? setBalance(0)
+          : setBalance(response.data.data.balance);
       } catch (error) {
-        // Handle any errors that occur during the request
         console.error("Failed to fetch profile:", error);
       }
     };
-
-    fetchBalance();
-  },[]);
+    isLoggedIn();
+    fetchBalance() 
+    setLoading(false);
+  }, [balance]);
   return (
     <SafeAreaView style={styles.container}>
       <Spinner
-          visible={loading}
-          textContent={'Loading...'}
-          textStyle={styles.spinnerTextStyle}
-        />
+        visible={loading}
+        textContent={"Loading..."}
+        textStyle={styles.spinnerTextStyle}
+      />
       <View style={styles.contentContainer}>
+        <Text style={styles.greetingText}>Hello!</Text>
         <Text style={styles.balanceText}>Saldo</Text>
         <Text style={styles.balanceAmount}>${balance}</Text>
         <View style={styles.buttonContainer}>
-          <Button
-            mode="contained"
-            icon={({ color }) => (
-              <MaterialCommunityIcons
-                name="arrow-up-bold-circle"
-                color={color}
-                size={24}
-              />
-            )}
-            onPress={handleTopUpPress}
+          <TouchableOpacity style={styles.button} onPress={handleTopUpPress}>
+            <MaterialCommunityIcons
+              name="arrow-up-bold-circle"
+              color="#fff"
+              size={24}
+            />
+            <Text style={styles.buttonLabel}>Top Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={styles.button}
-            contentStyle={styles.buttonContent}
-            labelStyle={styles.buttonLabel}
-          >
-            Top Up
-          </Button>
-          <Button
-            mode="contained"
-            icon={({ color }) => (
-              <MaterialCommunityIcons
-                name="send-circle"
-                color={color}
-                size={24}
-              />
-            )}
             onPress={handleTransferPress}
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-            labelStyle={styles.buttonLabel}
           >
-            Transfer
-          </Button>
+            <MaterialCommunityIcons
+              name="send-circle"
+              color="#fff"
+              size={24}
+            />
+            <Text style={styles.buttonLabel}>Transfer</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>
   );
+  
+  
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "aqua",
+    backgroundColor: "#f2f2f2",
+    alignItems: "center",
+    justifyContent: "center",
   },
   contentContainer: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#fff",
     paddingHorizontal: 16,
+    paddingVertical: 32,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  greetingText: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "#333",
   },
   balanceText: {
     fontSize: 18,
@@ -129,19 +141,25 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   button: {
-    marginVertical: 8,
-    width: "40%",
-    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "#2980B9",
-  },
-  buttonContent: {
-    height: 48,
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    width: 150,
   },
   buttonLabel: {
     fontSize: 18,
     fontWeight: "bold",
     color: "#FFF",
+    marginTop: 8,
+    textAlign: "center",
   },
 });
 
+
+
 export default Home;
+
+

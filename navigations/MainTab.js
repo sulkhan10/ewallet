@@ -47,7 +47,7 @@ export default function MainTab() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="SignUp"
         component={SignUp}
         options={{
@@ -68,7 +68,7 @@ export default function MainTab() {
             <MaterialCommunityIcons name="account-circle" size={24} color={color}/>
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   )
 }
