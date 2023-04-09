@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, FlatList } from "react-native";
+import { View, StyleSheet, Text, FlatList, Alert } from "react-native";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,12 +7,13 @@ import axios from "axios";
 import { balanceAtom } from "../store";
 import { useAtom } from "jotai";
 import Spinner from "react-native-loading-spinner-overlay";
-
+import { useNavigation } from "@react-navigation/native";
 const History = () => {
   const [historyData, setHistoryData] = useState([]);
   const [loading, setLoading] = useState(false);
-
+nav
   const [balance, setBalance] = useAtom(balanceAtom);
+  const navigation = useNavigation();
   useEffect(() => {
     setLoading(true);
 
@@ -33,6 +34,9 @@ const History = () => {
         setHistoryData(response.data.data);
       } catch (error) {
         console.error("Failed to fetch profile:", error);
+        Alert.alert('No History Found', 'Please Top Up To Your Account First', [
+          { text: 'OK', onPress: () => navigation.navigate('Home') }
+        ]);
       }
     };
 

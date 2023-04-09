@@ -1,17 +1,25 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { View, StyleSheet, Text, TextInput, Button, TouchableOpacity, Alert} from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  Button,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
-import {  useAtom } from "jotai";
-import { userFirstNameAtom,userLastNameAtom } from "../store";
+import { useAtom } from "jotai";
+import { userFirstNameAtom, userLastNameAtom } from "../store";
 const UpdateProfile = () => {
   const [firstName, setFirstName] = useAtom(userFirstNameAtom);
   const [lastName, setLastName] = useAtom(userLastNameAtom);
   const [editFirstName, setEditFirstName] = useState("");
   const [editLastName, setEditLastName] = useState("");
   const [updateStatus, setUpdateStatus] = useState(null);
-const navigation = useNavigation();
+  const navigation = useNavigation();
   const handleUpdatePress = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -29,13 +37,15 @@ const navigation = useNavigation();
         data,
         config
       );
-      console.log("Profile updated successfully:", response.data);
-      setFirstName(editFirstName)
-setLastName(editLastName)
-      Alert.alert('Update Successful', 'Profile updated successfully!!', [
-        { text: 'OK', onPress: () => navigation.navigate('Profile') }
-      ]);
-      setUpdateStatus("Profile updated successfully!");
+      if (response.data.status == 0) {
+        Alert.alert("Update Successful", "Profile updated successfully!!", [
+          { text: "OK", onPress: () => navigation.navigate("Profile") },
+        ]);
+        setFirstName(editFirstName);
+        setLastName(editLastName);
+        console.log("Profile updated successfully:", response.data);
+        setUpdateStatus("Profile updated successfully!");
+      }
     } catch (error) {
       console.error("Failed to update profile:", error);
       setUpdateStatus("Failed to update profile");
@@ -43,10 +53,9 @@ setLastName(editLastName)
   };
 
   return (
-      <View style={styles.container}>
-        <Text style={styles.pageTitle}>Update Profile</Text>
-        <View style={styles.inputContainer}>
-
+    <View style={styles.container}>
+      <Text style={styles.pageTitle}>Update Profile</Text>
+      <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="First Name"
@@ -59,15 +68,18 @@ setLastName(editLastName)
           value={editLastName}
           onChangeText={setEditLastName}
         />
-      
-        <TouchableOpacity style={styles.enabledButton} onPress={handleUpdatePress}   
 
->
+        <TouchableOpacity
+          style={styles.enabledButton}
+          onPress={handleUpdatePress}
+        >
           <Text style={styles.buttonText}>Update Profile</Text>
         </TouchableOpacity>
-        {updateStatus && <Text style={styles.updateStatus}>{updateStatus}</Text>}
+        {updateStatus && (
+          <Text style={styles.updateStatus}>{updateStatus}</Text>
+        )}
       </View>
-      </View>
+    </View>
   );
 };
 

@@ -5,7 +5,8 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Image
+  Image,
+  Alert,
 } from "react-native";
 import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,8 +28,13 @@ const SignUp = () => {
     axios
       .post("https://tht-api.nutech-integrasi.app/registration", data)
       .then((response) => {
-        console.log("Signup successful:", response.data);
-        navigation.navigate("Login");
+        if (response.data.status === 0) {
+          Alert.alert('Signup successful', 'Your Account has been made, please log in!', [
+            { text: 'OK', onPress: () => navigation.navigate('Login') }
+          ]);
+        } else {
+          Alert.alert('Sign Up Failed', response.data.message);
+        }
       })
       .catch((error) => {
         console.error("Signup failed:", error);

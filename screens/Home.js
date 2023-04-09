@@ -7,7 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import Spinner from "react-native-loading-spinner-overlay";
-import { atom, useAtom } from "jotai";
+import {  useAtom } from "jotai";
 import { balanceAtom, userFirstNameAtom, userLastNameAtom } from "../store";
 
 const Home = () => {
@@ -59,6 +59,11 @@ const Home = () => {
   }, [balance]);
   return (
     <SafeAreaView style={styles.container}>
+      <Spinner
+        visible={loading}
+        textContent={"Loading..."}
+        textStyle={styles.spinnerTextStyle}
+      />
       <View style={styles.contentContainer}>
         <Text style={styles.greetingText}>Hello {firstName} {lastName}!</Text>
         <Text style={styles.subGreetingText}>The Official App of E-Wallet Indonesia</Text>
@@ -98,11 +103,7 @@ const Home = () => {
           Start managing your funds with a single tap!
         </Text>
       </View>
-      <Spinner
-        visible={loading}
-        textContent={"Loading..."}
-        textStyle={styles.spinnerTextStyle}
-      />
+      
     </SafeAreaView>
   );
 };

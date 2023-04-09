@@ -6,6 +6,7 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Alert
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
@@ -22,13 +23,19 @@ const Login = () => {
     axios
       .post("https://tht-api.nutech-integrasi.app/login", data)
       .then((response) => {
-        console.log("Login successful:", response.data);
+        console.log(response);
+        if (response.data.status == 0) {
+          console.log("Login successful:", response.data);
         const { email, first_name, last_name, token } = response.data.data;
         AsyncStorage.setItem("email", email);
         AsyncStorage.setItem("first_name", first_name);
         AsyncStorage.setItem("last_name", last_name);
         AsyncStorage.setItem("token", token);
         navigation.navigate("MainTab");
+        } else {
+          Alert.alert('Login Failed', response.data.message);
+        }
+        
       })
       .catch((error) => {
         console.error("Login failed:", error);
