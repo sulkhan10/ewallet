@@ -1,25 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MainTab from "../navigations/MainTab";
-import Home from "./Home";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
-  let token = AsyncStorage.getItem("token");
-
-
   const handleLoginPress = () => {
-
     const data = {
       email,
       password,
@@ -46,7 +41,12 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
+      <Image
+        source={require('../assets/icon.png')}
+        style={styles.image}
+      />
       <Text style={styles.pageTitle}>Login</Text>
+      <Text style={styles.pageSubTitle}>Welcome to e-wallet app</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -61,56 +61,82 @@ const Login = () => {
           value={password}
           onChangeText={setPassword}
         />
-        <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={handleSignupPress}>
-          <Text style={styles.signupButtonText}>Sign up</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleLoginPress}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
+          <Text>or</Text>
+          <TouchableOpacity onPress={handleSignupPress}>
+            <Text style={styles.signupButtonText}>Sign up</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F8EFEF",
-  },
-  pageTitle: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 32,
-  },
-  inputContainer: {
-    width: "80%",
-    alignItems: "center",
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    backgroundColor: "#fff",
-    borderRadius: 25,
-    paddingHorizontal: 16,
-    fontSize: 18,
-    marginBottom: 16,
-    color: "#333",
-  },
-  button: {
-    backgroundColor: "#ff7675",
-    borderRadius: 25,
-    paddingVertical: 14,
-    paddingHorizontal: 24,
-    alignSelf: "center",
-  },
-  buttonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#fff",
-  },
-});
+}
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "#E6F1F6", 
+    },
+    pageTitle: {
+      fontSize: 32,
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: 2,
+    },
+    pageSubTitle: {
+      fontSize: 16,
+      fontWeight: "bold",
+      color: "#333",
+      marginBottom: 32,
+    },
+    inputContainer: {
+      width: "80%",
+      alignItems: "center",
+    },
+    input: {
+      width: "100%",
+      height: 50,
+      backgroundColor: "#fff",
+      borderRadius: 25,
+      paddingHorizontal: 16,
+      fontSize: 18,
+      marginBottom: 16,
+      color: "#333",
+    },
+    button: {
+      backgroundColor: "#42A5F5", 
+      borderRadius: 25,
+      paddingVertical: 14,
+      paddingHorizontal: 24,
+      alignSelf: "center",
+    },
+    buttonText: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: "#fff",
+    },
+    signupButtonText: {
+      fontSize: 18,
+      fontWeight: "bold",
+      color: "black",
+    },
+    buttonContainer: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 16,
+      gap: 16,
+    },
+    image: {
+      width: 75,
+      height: 75,
+      borderRadius: 75,
+    },
+  });
 
 export default Login;

@@ -1,17 +1,26 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from "@react-navigation/native";
-import { atom, useAtom } from "jotai";
+import {  useAtom } from "jotai";
 import { balanceAtom } from "../store";
 
 const Transfer = () => {
   const [balance, setBalance] = useAtom(balanceAtom)
   const [transferAmount, setTransferAmount] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+
   const navigation = useNavigation();
+  const handleInputChange = (text) => {
+    setTransferAmount(text);
+    if (text !== '') {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  };
   const handleTransferPress = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -43,16 +52,18 @@ const Transfer = () => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.pageTitle}>Transfer Page</Text>
+      <Text style={styles.pageTitle}>Transfer</Text>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
           placeholder="Enter transfer amount"
           keyboardType="numeric"
           value={transferAmount}
-          onChangeText={setTransferAmount}
+          onChangeText={handleInputChange}
         />
-        <TouchableOpacity style={styles.button} onPress={handleTransferPress}>
+        <TouchableOpacity style={[styles.button, isButtonDisabled ? styles.disabledButton : styles.enabledButton]} onPress={handleTransferPress}           disabled={isButtonDisabled}
+
+>
           <Text style={styles.buttonText}>Transfer</Text>
         </TouchableOpacity>
       </View>
@@ -65,7 +76,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8EFEF",
+    backgroundColor: "#E6F1F6",
   },
   pageTitle: {
     fontSize: 32,
@@ -86,8 +97,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 16,
   },
-  button: {
-    backgroundColor: "#ff7675",
+  enabledButton: {
+    backgroundColor: "#42A5F5",
+    borderRadius: 25,
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    alignSelf: "center",
+  },
+  disabledButton: {
+    backgroundColor: "gray",
     borderRadius: 25,
     paddingVertical: 14,
     paddingHorizontal: 24,

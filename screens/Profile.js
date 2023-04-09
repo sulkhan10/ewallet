@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { View, StyleSheet, Text, Button ,TouchableOpacity } from 'react-native';
+import React, { useEffect, } from "react";
+import { View, StyleSheet, Text ,TouchableOpacity } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
+import {  useAtom } from "jotai";
+import { userFirstNameAtom,userLastNameAtom,userEmailAtom } from "../store";
 const Profile = () => {
-  const [profileData, setProfileData] = useState({});
+  const [firstName, setFirstName] = useAtom(userFirstNameAtom);
+  const [lastName, setLastName] = useAtom(userLastNameAtom);
+  const [email, setEmail] = useAtom(userEmailAtom);
 
     const navigation = useNavigation();
 
@@ -26,27 +30,21 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // Get the bearer token from storage
         const token = await AsyncStorage.getItem("token");
-
-        // Set the Authorization header with bearer token
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
-
-        // Make the GET request to fetch the user profile
         const response = await axios.get(
           "https://tht-api.nutech-integrasi.app/getProfile",
           config
         );
 console.log(response.data);
-        // Update the profileData state with the fetched profile data
-        setProfileData(response.data.data);
-
+        setFirstName(response.data.data.first_name)
+setLastName(response.data.data.last_name)
+setEmail(response.data.data.email)
       } catch (error) {
-        // Handle any errors that occur during the request
         console.error("Failed to fetch profile:", error);
       }
     };
@@ -54,15 +52,15 @@ console.log(response.data);
     fetchProfile();
   }, []);
   return (
-    <SafeAreaView style={{ flex: 1 ,backgroundColor:'aqua'}}>
+    <SafeAreaView style={{ flex: 1 }}>
 
 <View style={styles.container}>
       <View style={styles.profileInfoContainer}>
         <View style={styles.profileImageContainer}>
-          <MaterialCommunityIcons name="account" size={64} color="#FFF" />
+          <MaterialCommunityIcons name="account" size={64} color="#42A5F5" />
         </View>
-        <Text style={styles.profileUsername}>{profileData.first_name} {profileData.last_name}</Text>
-        <Text style={styles.profileEmail}>{profileData.email}</Text>
+        <Text style={styles.profileUsername}>{firstName} {lastName}</Text>
+        <Text style={styles.profileEmail}>{email}</Text>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
@@ -87,7 +85,7 @@ console.log(response.data);
 const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: '#2980B9',
+      backgroundColor: "#E6F1F6",
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -106,12 +104,12 @@ const styles = StyleSheet.create({
     profileUsername: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: '#FFF',
+      // color: '#FFF',
       marginTop: 8,
     },
     profileEmail: {
       fontSize: 16,
-      color: '#FFF',
+      // color: '#FFF',
       marginTop: 4,
     },
     buttonContainer: {

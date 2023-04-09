@@ -69,19 +69,28 @@ const History = () => {
           />
         </View>
         <View style={styles.transactionInfoContainer}>
-          <Text style={styles.transactionType}>{item.transaction_id}</Text>
-          <Text style={styles.transactionType}>{item.transaction_type}</Text>
-          <Text style={styles.transactionTime}>{item.transaction_time}</Text>
+          <Text style={styles.transactionType}>ID : {item.transaction_id}</Text>
+          <Text style={styles.transactionType}>Type : {item.transaction_type}</Text>
+          <Text style={styles.transactionTime}>
+          {new Date(item.transaction_time).toLocaleDateString('id-ID', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+              })}
+            </Text>
         </View>
         <View style={styles.transactionAmountContainer}>
           <Text style={styles.transactionAmount}>{item.amount} USD</Text>
         </View>
       </View>
+      
     );
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "aqua" }}>
+    <SafeAreaView style={{ flex: 1, }}>
       <View style={styles.container}>
         <Text style={styles.pageTitle}>Transaction History</Text>
         <FlatList
@@ -148,6 +157,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#333",
+  },
+  spinnerTextStyle: {
+    color: '#FFF'
   },
 });
 

@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image
+} from "react-native";
 import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -10,11 +17,7 @@ const SignUp = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const navigation = useNavigation();
-
   const handleSignupPress = () => {
-    // Perform signup action with the email, password, firstName, and lastName values
-    // For example, you can send a POST request to your backend API to create a new user
-    // You can customize this part to fit your specific use case
     const data = {
       email,
       password,
@@ -23,20 +26,26 @@ const SignUp = () => {
     };
     axios
       .post("https://tht-api.nutech-integrasi.app/registration", data)
-      .then(response => {
+      .then((response) => {
         console.log("Signup successful:", response.data);
-        // Handle successful signup, e.g., navigate to login screen
         navigation.navigate("Login");
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Signup failed:", error);
-        // Handle signup error, e.g., display error message
       });
   };
-
+  const handleLoginPress = () => {
+    navigation.navigate("Login");
+  };
   return (
     <SafeAreaView style={styles.container}>
+       <Image
+        source={require('../assets/icon.png')}
+        style={styles.image}
+      />
       <Text style={styles.pageTitle}>Sign Up</Text>
+      <Text style={styles.pageSubTitle}>Sign Up for an account to enjoy our features</Text>
+
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.input}
@@ -63,9 +72,15 @@ const SignUp = () => {
           value={lastName}
           onChangeText={setLastName}
         />
-        <TouchableOpacity style={styles.button} onPress={handleSignupPress}>
-          <Text style={styles.buttonText}>Sign Up</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.button} onPress={handleSignupPress}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+            <Text>or</Text>
+          <TouchableOpacity onPress={handleLoginPress}>
+            <Text style={styles.loginButtonText}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -76,13 +91,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F8EFEF",
+    backgroundColor: "#E6F1F6",
   },
   pageTitle: {
     fontSize: 32,
     fontWeight: "bold",
     color: "#333",
-    marginBottom: 32,
+    marginBottom: 2,
   },
   inputContainer: {
     width: "80%",
@@ -99,7 +114,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   button: {
-    backgroundColor: "#ff7675",
+    backgroundColor: "#42A5F5", 
     borderRadius: 25,
     paddingVertical: 14,
     paddingHorizontal: 24,
@@ -110,6 +125,32 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 16,
+    gap: 16,
+  },
+  loginButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
+  },
+  pageSubTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 32,
+  },
+  image: {
+    width: 75,
+    height: 75,
+    borderRadius: 75,
+  },
 });
+
+
 
 export default SignUp;
